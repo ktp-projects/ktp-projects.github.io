@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -191,3 +192,101 @@
 </script>
 </body>
 </html>
+=======
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#2f9cc4">
+  <title>Expo Portfolio | KΘΠ Nu Chapter</title>
+  <meta name="description" content="Browse the latest projects and featured work from the Expo Portfolio.">
+  <link rel="stylesheet" href="styles.css">
+  <script src="projects.js" defer></script>
+  <script src="script.js" defer></script>
+</head>
+<body>
+  <div class="site-shell">
+    <header class="site-header">
+      <div class="brand-row">
+        <a class="site-brand" href="index.html" aria-label="Expo Portfolio home">
+          <span>EXPO PORTFOLIO</span>
+        </a>
+        <a class="chapter-mark" href="index.html" aria-label="K Theta Pi Nu Chapter, home">
+          <span class="chapter-greek">KΘΠ</span>
+          <span class="chapter-name">NU CHAPTER</span>
+        </a>
+      </div>
+      <nav class="main-nav" aria-label="Main navigation">
+        <a href="index.html" aria-current="page">HOME</a>
+        <a href="about.html">ABOUT US</a>
+        <a href="rush.html">RUSH</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="filters-section" aria-label="Find projects">
+        <div class="filter-group">
+          <label for="sort-filter">Sort by date</label>
+          <select id="sort-filter">
+            <option value="newest">Newest to oldest</option>
+            <option value="oldest">Oldest to newest</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label for="category-filter">Category</label>
+          <select id="category-filter">
+            <option value="all">All categories</option>
+            <option value="Engineering">Engineering</option>
+            <option value="Technology">Technology</option>
+            <option value="Community">Community</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label for="year-filter">Year</label>
+          <select id="year-filter">
+            <option value="all">All years</option>
+          </select>
+        </div>
+        <div class="filter-group search-group">
+          <label for="project-search">Search</label>
+          <input id="project-search" type="search" placeholder="Search projects" autocomplete="off">
+        </div>
+      </section>
+
+      <section class="featured-section" aria-label="Featured projects">
+        <div class="featured-side-heading"><span>FEATURED SECTION</span></div>
+        <button class="carousel-arrow arrow-prev" id="previous-featured" type="button" aria-label="Previous featured project">&#10094;</button>
+        <div class="carousel-stage" id="carousel-stage" aria-label="Featured project carousel">
+          <div class="featured-item side-item" id="feature-left"></div>
+          <div class="featured-item focus-item" id="feature-center"></div>
+          <div class="featured-item side-item" id="feature-right"></div>
+        </div>
+        <button class="carousel-arrow arrow-next" id="next-featured" type="button" aria-label="Next featured project">&#10095;</button>
+        <span id="carousel-announcement" class="sr-only" aria-live="off"></span>
+      </section>
+
+      <div class="section-divider" aria-hidden="true"></div>
+
+      <section class="projects-section" aria-labelledby="projects-heading">
+        <div class="project-section-heading">
+          <h1 id="projects-heading">ALL PROJECTS</h1>
+          <span id="result-count" role="status" aria-live="polite"></span>
+        </div>
+        <div class="project-grid" id="project-grid"></div>
+        <div class="empty-state" id="empty-state" hidden>
+          <h2>No projects found</h2>
+          <p>Try changing your filters or searching for another term.</p>
+          <button id="reset-filters" type="button">Clear filters</button>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <span>© <span id="year-now">2026</span> KΘΠ Nu Chapter · Expo Portfolio</span>
+      <a href="index.html">Back to top ↑</a>
+    </footer>
+  </div>
+</body>
+</html>
+>>>>>>> Stashed changes
