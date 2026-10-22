@@ -3,7 +3,7 @@
 // This public key is safe to use in frontend code when RLS is configured.
 // NEVER put your secret/service_role key here.
 window.EXPO_CONFIG = {
-  url: 'https://YOUR-PROJECT.supabase.co',
-  publishableKey: 'sb_publishable_REPLACE_ME',
+  url: 'https://gscsqyyztmyiehlxkakq.supabase.co',
+  publishableKey: 'https://gscsqyyztmyiehlxkakq.supabase.co/rest/v1/',
   bucket: 'project-photos'
 };
