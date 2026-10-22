@@ -4,6 +4,6 @@
 // NEVER put your secret/service_role key here.
 window.EXPO_CONFIG = {
   url: 'https://gscsqyyztmyiehlxkakq.supabase.co',
-  publishableKey: 'https://gscsqyyztmyiehlxkakq.supabase.co/rest/v1/',
+  publishableKey: 'sb_publishable_CdkrRiIgVcHxSy7nbd_mpA_ftQQausd',
   bucket: 'project-photos'
 };
