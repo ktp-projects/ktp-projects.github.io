@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Project Archive</title>
+<style>
+  :root {
+    --bg: #1e50d6;
+    --band: #0f2f8f;
+    --ink: #ffffff;
+    --muted: #c9d6ff;
+    --blank: rgba(255,255,255,.2);
+    --accent: #ffd84d;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font-family: "DM Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    line-height: 1.5;
+  }
+  .wrap { max-width: 1120px; margin: 0 auto; padding: 0 24px; }
+
+  header { position: sticky; top: 0; z-index: 20; background: var(--bg); border-bottom: 1px solid rgba(255,255,255,.2); }
+  .bar { display: flex; align-items: center; gap: 24px; padding: 16px 0; }
+  .logo { font-weight: 700; font-size: 20px; white-space: nowrap; }
+  .search { flex: 1; position: relative; }
+  .search svg { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #5b6272; }
+  .search input {
+    width: 100%; height: 44px; padding: 0 16px 0 44px; font: inherit;
+    color: #1c1e21; background: #fff; border: 0; border-radius: 999px;
+  }
+  .search input:focus { outline: 3px solid var(--accent); }
+
+  h2 { font-size: 22px; margin: 0; }
+
+  /* Featured stage with highlighted band */
+  .stage { position: relative; margin-top: 36px; padding: 28px 0 36px; background: var(--band);
+    border-top: 2px solid rgba(255,255,255,.25); border-bottom: 2px solid rgba(255,255,255,.25); }
+  .stage h2 { text-align: center; margin-bottom: 4px; }
+  .stage .sub { text-align: center; color: var(--muted); font-size: 14px; margin: 0; }
+  .slider {
+    --w: min(460px, 72vw);
+    position: relative; display: flex; gap: 28px; align-items: flex-start;
+    overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none;
+    padding: 40px calc((100% - var(--w)) / 2) 28px;
+  }
+  .slider::-webkit-scrollbar { display: none; }
+  .slider .card {
+    flex: 0 0 var(--w); scroll-snap-align: center;
+    transform: scale(.9); opacity: .65;
+    transition: transform .4s ease, opacity .4s ease;
+  }
+  .slider .card.active { transform: scale(1.12); opacity: 1; }
+  .slider.moving .card { transform: scale(.9); opacity: .65; }
+  .slider .thumb { aspect-ratio: 16 / 10; }
+  .slider .card h3 { font-size: 20px; }
+  .arrow {
+    position: absolute; top: 50%; z-index: 5; width: 44px; height: 44px; border-radius: 50%;
+    border: 0; background: #fff; color: var(--band); font-size: 20px; cursor: pointer;
+  }
+  .arrow:hover { background: var(--accent); }
+  .arrow:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+  #prev { left: 20px; } #next { right: 20px; }
+
+  /* Grid */
+  section.all { padding: 48px 0 8px; }
+  .section-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+  .count { color: var(--muted); font-size: 14px; }
+  .grid { display: grid; gap: 32px 24px; grid-template-columns: repeat(3, 1fr); }
+  .thumb { background: var(--blank); border-radius: 12px; aspect-ratio: 4 / 3; display: grid; place-items: center; color: var(--muted); font-size: 13px; }
+  .card h3 { margin: 12px 0 0; font-size: 16px; font-weight: 600; }
+  .card p { margin: 2px 0 0; font-size: 14px; color: var(--muted); }
+  .card .desc { margin-top: 6px; color: var(--ink); opacity: .85; }
+  .empty { display: none; padding: 64px 0; text-align: center; color: var(--muted); }
+  footer { padding: 56px 0; color: var(--muted); font-size: 14px; }
+
+  @media (max-width: 700px) { .grid { grid-template-columns: repeat(2, 1fr); gap: 24px 16px; } #prev { left: 8px; } #next { right: 8px; } }
+  @media (max-width: 440px) { .wrap { padding: 0 16px; } .logo { display: none; } }
+  @media (prefers-reduced-motion: reduce) { .slider .card { transition: none; } }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap bar">
+    <div class="logo">Project Archive</div>
+    <label class="search">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <input id="q" type="search" placeholder="Search projects" aria-label="Search projects" autocomplete="off">
+    </label>
+  </div>
+</header>
+
+<section class="stage">
+  <h2>Featured</h2>
+  <p class="sub">Highlights from past years</p>
+  <button class="arrow" id="prev" aria-label="Previous project">&#8592;</button>
+  <button class="arrow" id="next" aria-label="Next project">&#8594;</button>
+  <div class="slider" id="slider"></div>
+</section>
+
+<main class="wrap">
+  <section class="all">
+    <div class="section-head">
+      <h2>All projects</h2>
+      <span class="count" id="count"></span>
+    </div>
+    <div class="grid" id="grid"></div>
+    <div class="empty" id="empty">No projects match your search. Try a different word.</div>
+  </section>
+</main>
+
+<footer class="wrap">Project Archive</footer>
+
+<script>
+  // ---- EDIT HERE ----
+  // Replace with your real projects. Set "image" to a path like "images/p1.jpg" to show a photo.
+  const projects = Array.from({ length: 24 }, (_, i) => ({
+    title: "Project " + (i + 1),
+    author: "blank",
+    desc: "Brief description here",
+    image: ""
+  }));
+  const featuredCount = 6; // the first 6 projects appear in the featured slider
+  // -------------------
+
+  const esc = s => s.replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  const cardHTML = p => {
+    const thumb = p.image
+      ? `<div class="thumb" style="background:center/cover url('${esc(p.image)}')"></div>`
+      : `<div class="thumb">Photo</div>`;
+    return `<div class="card">${thumb}<h3>${esc(p.title)}</h3><p>Made by ${esc(p.author)}</p><p class="desc">${esc(p.desc)}</p></div>`;
+  };
+
+  // Grid + search
+  const grid = document.getElementById("grid"), count = document.getElementById("count"), empty = document.getElementById("empty");
+  function render(list) {
+    grid.innerHTML = list.map(cardHTML).join("");
+    count.textContent = list.length + (list.length === 1 ? " project" : " projects");
+    empty.style.display = list.length ? "none" : "block";
+  }
+  render(projects);
+  document.getElementById("q").addEventListener("input", e => {
+    const t = e.target.value.trim().toLowerCase();
+    render(projects.filter(p => (p.title + " " + p.author + " " + p.desc).toLowerCase().includes(t)));
+  });
+
+  // Featured slider: the centered card enlarges, then shrinks while sliding
+  const slider = document.getElementById("slider");
+  slider.innerHTML = projects.slice(0, featuredCount).map(cardHTML).join("");
+  const items = [...slider.children];
+  let idx = 0, settle;
+
+  function nearest() {
+    const mid = slider.scrollLeft + slider.clientWidth / 2;
+    let best = 0, dist = Infinity;
+    items.forEach((c, k) => {
+      const d = Math.abs(c.offsetLeft + c.offsetWidth / 2 - mid);
+      if (d < dist) { dist = d; best = k; }
+    });
+    return best;
+  }
+  function setActive() {
+    idx = nearest();
+    items.forEach((c, k) => c.classList.toggle("active", k === idx));
+    slider.classList.remove("moving");
+  }
+  function go(i) {
+    idx = (i + items.length) % items.length;
+    const c = items[idx];
+    slider.scrollTo({ left: c.offsetLeft - (slider.clientWidth - c.offsetWidth) / 2, behavior: "smooth" });
+  }
+  slider.addEventListener("scroll", () => {
+    slider.classList.add("moving");
+    clearTimeout(settle);
+    settle = setTimeout(setActive, 140);
+  });
+  window.addEventListener("resize", () => go(idx));
+  document.getElementById("next").onclick = () => go(idx + 1);
+  document.getElementById("prev").onclick = () => go(idx - 1);
+  setActive();
+
+  // Auto-slide every 4 seconds (pauses on hover; off for reduced-motion users)
+  let paused = false;
+  if (!matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    ["mouseenter", "focusin", "touchstart"].forEach(ev => slider.addEventListener(ev, () => paused = true));
+    ["mouseleave", "focusout"].forEach(ev => slider.addEventListener(ev, () => paused = false));
+    setInterval(() => { if (!paused) go(idx + 1); }, 4000);
+  }
+</script>
+</body>
+</html>
