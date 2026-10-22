@@ -165,3 +165,33 @@ button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; transition-duration: .01ms !important; }
 }
+
+/* Post creation + Supabase authentication */
+.main-nav .nav-signout { border: 0; padding: 0; background: transparent; font-size: 13px; color: #123e81; font-weight: 700; }
+.main-nav [hidden] { display: none; }
+.main-nav a[aria-current="page"] { text-decoration: underline; text-decoration-color: var(--green); text-underline-offset: 6px; }
+.site-message { background: #f4f8fb; border-left: 4px solid var(--blue); padding: 13px; margin: 0 0 15px; }
+.site-message[hidden] { display: none; }
+.form-layout { max-width: 730px; }
+.editor-form { display: flex; flex-direction: column; gap: 7px; margin-top: 21px; }
+.editor-form label { font-size: 13px; font-weight: 800; margin-top: 13px; }
+.editor-form input:not([type="file"]), .editor-form select, .editor-form textarea {
+  width: 100%; padding: 12px; border: 2px solid var(--border); background: white; border-radius: 0;
+}
+.editor-form textarea { resize: vertical; min-height: 130px; }
+.editor-form input[type="file"] { border: 2px dashed #9c9c9c; padding: 15px; width: 100%; }
+.editor-form .field-help { color: var(--muted); font-size: 12px; margin: 0 0 8px; line-height: 1.5; }
+.required { color: #a12121; }
+.editor-preview { display: block; width: min(100%, 450px); max-height: 320px; object-fit: contain; border: 2px solid var(--border); background: #eee; }
+.editor-preview[hidden] { display: none; }
+.form-actions { display: flex; gap: 16px; flex-wrap: wrap; align-items: center; margin-top: 24px; }
+.primary-button { display: inline-block; width: fit-content; background: var(--blue); border: 2px solid var(--ink); color: var(--ink); font-weight: 800; text-decoration: none; padding: 11px 19px; cursor: pointer; font-size: 14px; }
+.primary-button:hover { background: #73c5e5; }
+.primary-button:disabled { opacity: .5; cursor: wait; }
+.text-button { background: transparent; border: 0; padding: 10px 0; font-weight: 700; cursor: pointer; color: #123e81; text-decoration: underline; text-underline-offset: 3px; width: fit-content; }
+.danger-button { background: #fff; color: #9a1b22; border: 2px solid #9a1b22; font-weight: 700; cursor: pointer; padding: 11px 17px; }
+.form-actions .danger-button { margin-left: auto; }
+.danger-button[hidden] { display: none; }
+.error-text { color: #9a1b22; font-weight: 700; }
+.detail-edit { margin-top: 20px; }
+.editor-form[hidden], .text-button[hidden] { display: none; }

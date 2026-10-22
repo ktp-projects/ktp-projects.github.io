@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const projects = Array.isArray(window.EXPO_PROJECTS) ? window.EXPO_PROJECTS : [];
+  let projects = Array.isArray(window.EXPO_PROJECTS) ? window.EXPO_PROJECTS : [];
   const sortFilter = document.getElementById('sort-filter');
   const categoryFilter = document.getElementById('category-filter');
   const yearFilter = document.getElementById('year-filter');
@@ -11,7 +11,7 @@
   const emptyState = document.getElementById('empty-state');
   const carouselStage = document.getElementById('carousel-stage');
   const announcement = document.getElementById('carousel-announcement');
-  const featured = projects.filter(project => project.featured).sort((a, b) => b.date.localeCompare(a.date));
+  let featured = [];
   const placeholder = 'images/photo-placeholder.svg';
   let featuredIndex = 0;
   let autoplayTimer = null;
@@ -146,15 +146,12 @@
     if (!featureSection.matches(':hover') && !featureSection.contains(document.activeElement)) startAutoplay();
   }
 
-  // Populate year choices from the actual post dates.
-  [...new Set(projects.map(project => project.date.slice(0, 4)))]
-    .sort((a, b) => b.localeCompare(a))
-    .forEach(year => {
-      const option = document.createElement('option');
-      option.value = year;
-      option.textContent = year;
-      yearFilter.append(option);
-    });
+  function refreshYearOptions() {
+    yearFilter.replaceChildren(new Option('All years', 'all'));
+    [...new Set(projects.map(project => project.date.slice(0, 4)))]
+      .sort((a, b) => b.localeCompare(a))
+      .forEach(year => yearFilter.append(new Option(year, year)));
+  }
 
   [sortFilter, categoryFilter, yearFilter].forEach(control => control.addEventListener('change', renderProjects));
   searchInput.addEventListener('input', renderProjects);
@@ -184,7 +181,30 @@
     if (document.hidden) stopAutoplay(); else startAutoplay();
   });
   document.getElementById('year-now').textContent = new Date().getFullYear();
-  renderProjects();
-  renderCarousel();
-  startAutoplay();
+  async function initialize() {
+    // In preview mode, retain original demo content. Once connected,
+    // show ONLY live Supabase records, not the sample records in projects.js.
+    if (window.EXPO_CONFIGURED) {
+      if (!window.EXPO_DB) {
+        window.EXPO_UTILS.message(document.getElementById('site-message'),
+          'Supabase could not load. Check your internet connection and refresh.', true);
+        projects = [];
+      } else {
+        try {
+          projects = await window.EXPO_UTILS.fetchProjects();
+        } catch (error) {
+          projects = [];
+          window.EXPO_UTILS.message(document.getElementById('site-message'),
+            `Could not load posts: ${error.message}`, true);
+        }
+      }
+    }
+    featured = projects.filter(project => project.featured)
+      .sort((a, b) => b.date.localeCompare(a.date));
+    refreshYearOptions();
+    renderProjects();
+    renderCarousel();
+    startAutoplay();
+  }
+  initialize();
 })();

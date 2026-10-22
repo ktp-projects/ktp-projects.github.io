@@ -7,6 +7,10 @@
   <title>Expo Portfolio | KΘΠ Nu Chapter</title>
   <meta name="description" content="Browse the latest projects and featured work from the Expo Portfolio.">
   <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
+  <script src="supabase-config.js" defer></script>
+  <script src="supabase-client.js" defer></script>
+  <script src="session-nav.js" defer></script>
   <script src="projects.js" defer></script>
   <script src="script.js" defer></script>
 </head>
@@ -26,11 +30,14 @@
         <a href="index.html" aria-current="page">HOME</a>
         <a href="about.html">ABOUT US</a>
         <a href="rush.html">RUSH</a>
-        <a href="create.html">Create a post</a>
+        <a href="create-post.html" id="create-post-nav" hidden>CREATE POST</a>
+        <a href="login.html" id="account-nav">SIGN IN</a>
+        <button type="button" class="nav-signout" id="sign-out-nav" hidden>LOG OUT</button>
       </nav>
     </header>
 
     <main>
+      <p id="site-message" class="site-message" role="status" hidden></p>
       <section class="filters-section" aria-label="Find projects">
         <div class="filter-group">
           <label for="sort-filter">Sort by date</label>

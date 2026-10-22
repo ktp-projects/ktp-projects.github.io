@@ -3,12 +3,19 @@
 <head>
   <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
   <title>About Us | Expo Portfolio</title><link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
+  <script src="supabase-config.js" defer></script>
+  <script src="supabase-client.js" defer></script>
+  <script src="session-nav.js" defer></script>
 </head>
 <body>
 <div class="site-shell">
   <header class="site-header">
     <div class="brand-row"><a class="site-brand" href="index.html"><span>EXPO PORTFOLIO</span></a><a class="chapter-mark" href="index.html" aria-label="K Theta Pi Nu Chapter home"><span class="chapter-greek">KΘΠ</span><span class="chapter-name">NU CHAPTER</span></a></div>
-    <nav class="main-nav" aria-label="Main navigation"><a href="index.html">HOME</a><a href="about.html" aria-current="page">ABOUT US</a><a href="rush.html">RUSH</a></nav>
+    <nav class="main-nav" aria-label="Main navigation"><a href="index.html">HOME</a><a href="about.html" aria-current="page">ABOUT US</a><a href="rush.html">RUSH</a>
+        <a href="create-post.html" id="create-post-nav" hidden>CREATE POST</a>
+        <a href="login.html" id="account-nav">SIGN IN</a>
+        <button type="button" class="nav-signout" id="sign-out-nav" hidden>LOG OUT</button></nav>
   </header>
   <main class="content-page">
     <p class="eyebrow">KΘΠ · NU CHAPTER</p>

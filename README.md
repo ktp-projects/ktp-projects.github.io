@@ -1,44 +1,95 @@
-# Expo Portfolio website
+# Expo Portfolio - Supabase edition
 
-A responsive demo based on the supplied wireframe. Works as a static site with no build tools required.
+Responsive HTML/CSS/vanilla-JS portfolio with public project tiles, auto-rotating featured posts, account signup/login, author-only create/edit/delete, and one converted WebP photo per project.
 
-## Get started
+No npm, git, build process, or backend hosting required for the frontend. You **do** need your own Supabase project and a web server (localhost or HTTPS). The website is not connected to anyone's account until you supply your own Supabase URL and publishable key.
 
-1. Unzip the folder.
-2. Double-click **index.html** in your browser.
-3. Or open this folder in VS Code and run it with a local server (Live Server is optional).
+## Step 1 - Create a Supabase project
 
-## What works
+1. Open https://supabase.com/dashboard and create a new project.
+2. In **Project Settings > API Keys**, locate your `sb_publishable_...` key. Copy only the publishable key, **never** a secret or service_role key. Find your Project URL under **Project Settings > Data API** or project settings (dashboard labels sometimes change).
+3. In `supabase-config.js`, replace `https://YOUR-PROJECT.supabase.co` and `sb_publishable_REPLACE_ME` with your own values. Leave `bucket: 'project-photos'` unchanged.
 
-- Featured carousel automatically cycles every **5 seconds**, with manual previous/next controls. It pauses when hovered or focused, and respects reduced-motion preferences.
-- Project tiles gently enlarge on hover and keyboard focus.
-- Date sorting is **newest to oldest by default**, or oldest to newest.
-- Category, year, and keyword filters work together.
-- Navigation goes to the included **About Us** and **Rush** pages.
-- Clicking a featured post or project tile opens its own project page (`project.html?id=...`).
-- Responsive desktop, tablet, and mobile layouts.
+The public/publishable key is intentionally visible in the client. Security comes from Row Level Security (RLS) and the restricted database grants in the SQL below.
 
-## Add or edit projects
+## Step 2 - Create the photo bucket
 
-Edit **projects.js**. Each object contains these properties:
+Supabase dashboard > **Storage > New Bucket**:
 
-```js
-{
-  id: 'my-project',                            // unique slug
-  title: 'My Project',
-  description: 'A few sentences about it.',
-  category: 'Engineering',                     // or Technology / Community
-  date: '2026-10-22',                          // YYYY-MM-DD; controls sorting
-  image: 'images/my-project.webp',             // one photo per project
-  imageAlt: 'Description of the photo',
-  featured: true                               // true = include in carousel
-}
+- Name: `project-photos`
+- **Public** bucket: ON (project pictures are meant to be visible to visitors)
+- Restrict MIME types to **`image/webp`**
+- File size limit: **2 MB**
+
+The browser resizes a chosen photo to a maximum side length of 1400 pixels, converts it to WebP, and refuses photos that remain over 2 MB. Only one named file exists *per project* (`<user ID>/<project ID>.webp`). Replacements overwrite the same file.
+
+## Step 3 - Install the database schema and security policies
+
+Dashboard > **SQL Editor > New query**. Paste the contents of `supabase/setup.sql` and select **Run**.
+
+This script creates `public.projects` and turns on RLS. Visitors may read the projects table. Only a signed-in author may insert, change, or delete their own posts. Storage policies allow authors to write only in their own directory. Only privileged administrators may change the `featured` flag; users cannot feature themselves.
+
+**Run the SQL once** in a new project. If you have an existing table/policies, review it carefully instead of applying blindly.
+
+## Step 4 - Configure login/confirmation URLs
+
+Supabase dashboard > **Authentication > Providers > Email**: enable Email. Keep Confirm Email enabled if you want people to verify their email addresses.
+
+Authentication > **URL Configuration**:
+- Site URL while developing: `http://localhost:8000`
+- Redirect URLs: `http://localhost:8000/login.html`
+- After publishing the website to GitHub Pages or another host, set your production Site URL and add `https://YOUR-DOMAIN/YOUR-PATH/login.html` to redirect URLs.
+
+If this should be members-only, don't leave open public signups on production: disable public signup and invite/approve the chapter's accounts in Auth (an administrative decision).
+
+## Step 5 - Run a local server
+
+On Windows in VS Code, open the extracted folder and run in PowerShell:
+
+```powershell
+py -m http.server 8000
 ```
 
-Put your own WebP pictures in the **images** folder. For example, add `images/my-project.webp` and change the `image` field accordingly. The default sample cards currently reference Unsplash photos (which need an internet connection). When an image can't load, a local placeholder image appears instead.
+Visit `http://localhost:8000`. You can also use the VS Code Live Server extension, but set the redirect URL above to its actual local address. **Do not use `file://`** by double-clicking your HTML for live authentication.
 
-To change the categories, update both the `<select id="category-filter">` options in **index.html** and the relevant `category` fields in **projects.js**.
+## Step 6 - End-to-end test
 
-## Later: database and login
+1. Open `login.html` and create a test account. Confirm by email if enabled, then sign in.
+2. In the navbar, click **CREATE POST**.
+3. Provide a title, category, several sentences, and one image; click **Publish post**.
+4. The post gets a UUID detail page (`project.html?id=...`) and automatically appears in the main grid, newest-first.
+5. As the author, the detail page offers **Edit your post**. Change text or replace the photo; the path stays the same.
+6. Sign out. The post remains public, while edit/create controls disappear. Sign in as a different account: that account cannot update or delete the original author's post.
+7. In Supabase **Table Editor**, verify a row exists in `public.projects`; in Storage, verify one `webp` file at `project-photos/<user ID>/<post ID>.webp`.
 
-This version is a **front-end demo**: project data lives in `projects.js`, so changes are made by editing that file. It does not yet save user posts or authenticate users. When ready, the same card and carousel layout can be connected to Supabase Auth, a `projects` table, and a Storage bucket for **one resized WebP photo per post**. Each project has a stable `id`, which makes that migration straightforward. Never put a Supabase `service_role` key in browser JavaScript.
+## Step 7 - Feature a post
+
+Featured posts are chapter-curated: a dashboard administrator can set `featured = true` in **Table Editor**, or use SQL Editor:
+
+```sql
+update public.projects set featured = true where id = 'YOUR-POST-UUID';
+```
+
+The home-page featured carousel rotates through `featured = true` posts every 5 seconds. It will show “No featured projects yet” until at least one post is featured.
+
+## Site structure
+
+- `index.html` + `script.js`: home-page cards, sorting, search, featured carousel
+- `project.html` + `project.js`: public project details, author edit link
+- `login.html` + `auth.js`: email/password signup and login
+- `create-post.html` + `create-post.js`: create, edit, replace image, delete
+- `supabase-config.js`: your Project URL and **publishable** key
+- `supabase-client.js`: browser Supabase client and shared project mapping
+- `session-nav.js`: shared account links / sign out
+- `styles.css`: styles, including hover effects
+- `projects.js`: **demo fallback ONLY**; hidden as soon as Supabase is configured
+- `supabase/setup.sql`: table security + storage upload policies
+
+## Important limitations before a public production launch
+
+- This static client is a starter. It relies on RLS and column-level grants to protect post ownership and featured status. Restrict production signup or add an approval system if only chapter members should be able to post.
+- Public Storage allows anyone with the image URL to view it (appropriate for published projects).
+- The browser enforces one active WebP file path per post, but it is not a quota enforcement system against deliberate abuse. For strict usage limits, add server-side moderation, abuse protection, and periodic cleanup.
+- Editing an image overwrites the stored file first. If the subsequent database update fails, the image may already have changed. Deleting a post removes its database record first, then the image; rare cleanup failures need admin attention.
+- No project records are migrated from `projects.js`; you'll create new records with the form.
+- Browser CDN loading requires internet. If the CDN cannot load, use a hosted/locally bundled copy of supabase-js v2.

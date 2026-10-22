@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Account | Expo Portfolio</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
+  <script src="supabase-config.js" defer></script>
+  <script src="supabase-client.js" defer></script>
+  <script src="session-nav.js" defer></script>
+  <script src="auth.js" defer></script>
+</head>
+<body>
+<div class="site-shell">
+  <header class="site-header">
+    <div class="brand-row"><a class="site-brand" href="index.html"><span>EXPO PORTFOLIO</span></a><a class="chapter-mark" href="index.html" aria-label="K Theta Pi Nu Chapter home"><span class="chapter-greek">KΘΠ</span><span class="chapter-name">NU CHAPTER</span></a></div>
+    <nav class="main-nav" aria-label="Main navigation"><a href="index.html">HOME</a><a href="about.html">ABOUT US</a><a href="rush.html">RUSH</a><a href="create-post.html" id="create-post-nav" hidden>CREATE POST</a><a href="login.html" aria-current="page" id="account-nav">SIGN IN</a><button type="button" id="sign-out-nav" class="nav-signout" hidden>LOG OUT</button></nav>
+  </header>
+  <main class="content-page form-layout">
+    <p class="eyebrow">MEMBER ACCESS</p>
+    <h1 id="auth-headline">Sign in</h1><div class="page-accent"></div>
+    <p id="auth-hint">Sign in to publish, edit, or remove your projects.</p>
+    <form id="auth-form" class="editor-form">
+      <label for="email">Email</label><input id="email" type="email" autocomplete="email" required>
+      <label for="password">Password</label><input id="password" type="password" autocomplete="current-password" minlength="6" required>
+      <button id="auth-submit" class="primary-button" type="submit">Sign in</button>
+    </form>
+    <button id="auth-toggle" class="text-button" type="button">Need an account? Sign up</button>
+    <p id="auth-message" role="status" hidden></p>
+  </main>
+  <footer class="site-footer"><span>KΘΠ Nu Chapter · Expo Portfolio</span><a href="index.html">Home</a></footer>
+</div>
+</body>
+</html>

@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Create a Post | Expo Portfolio</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
+  <script src="supabase-config.js" defer></script>
+  <script src="supabase-client.js" defer></script>
+  <script src="session-nav.js" defer></script>
+  <script src="create-post.js" defer></script>
+</head>
+<body>
+<div class="site-shell">
+  <header class="site-header">
+    <div class="brand-row"><a class="site-brand" href="index.html"><span>EXPO PORTFOLIO</span></a><a class="chapter-mark" href="index.html" aria-label="K Theta Pi Nu Chapter home"><span class="chapter-greek">KΘΠ</span><span class="chapter-name">NU CHAPTER</span></a></div>
+    <nav class="main-nav" aria-label="Main navigation"><a href="index.html">HOME</a><a href="about.html">ABOUT US</a><a href="rush.html">RUSH</a><a href="create-post.html" id="create-post-nav" aria-current="page" hidden>CREATE POST</a><a href="login.html" id="account-nav">SIGN IN</a><button type="button" id="sign-out-nav" class="nav-signout" hidden>LOG OUT</button></nav>
+  </header>
+  <main class="content-page form-layout">
+    <p class="eyebrow">SHARE YOUR WORK</p>
+    <h1 id="form-title">Create a post</h1><div class="page-accent"></div>
+    <p id="author-label">Checking your account...</p>
+    <form id="post-form" class="editor-form">
+      <label for="post-title">Project title <span class="required">*</span></label>
+      <input id="post-title" maxlength="100" minlength="3" required placeholder="What is your project called?">
+      <label for="post-category">Category <span class="required">*</span></label>
+      <select id="post-category" required>
+        <option value="Engineering">Engineering</option>
+        <option value="Technology">Technology</option>
+        <option value="Community">Community</option>
+      </select>
+      <label for="post-description">Description <span class="required">*</span></label>
+      <textarea id="post-description" rows="6" maxlength="1000" minlength="10" required placeholder="Write a few sentences about what you made, how it works, or what you learned."></textarea>
+      <p class="field-help">10–1000 characters. Your description appears below the project photo.</p>
+      <label for="post-image">One project photo <span class="required">*</span></label>
+      <input id="post-image" type="file" accept="image/*" required>
+      <p class="field-help">JPEG, PNG, or another browser-supported photo. The site resizes it to a maximum of 1400 pixels and converts it to WebP (2 MB maximum).</p>
+      <img id="photo-preview" class="editor-preview" alt="Selected project photo preview" hidden>
+      <p id="existing-photo-note" class="field-help" hidden></p>
+      <label for="post-alt">Photo description (accessibility)</label>
+      <input id="post-alt" maxlength="200" placeholder="e.g. A small robot on a wooden workbench">
+      <div class="form-actions">
+        <button type="submit" id="save-post" class="primary-button">Publish post</button>
+        <a href="index.html" class="text-button">Cancel</a>
+        <button type="button" id="delete-post" class="danger-button" hidden>Delete post</button>
+      </div>
+    </form>
+    <p id="post-message" role="status" hidden></p>
+  </main>
+  <footer class="site-footer"><span>KΘΠ Nu Chapter · Expo Portfolio</span><a href="index.html">Home</a></footer>
+</div>
+</body>
+</html>
