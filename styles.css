@@ -12,7 +12,7 @@
 html { scroll-behavior: smooth; }
 body {
   margin: 0;
-  background: linear-gradient(145deg, #329fc4, #57afd0);
+  background: linear-gradient(145deg, #458fff, #19ff19);
   color: var(--ink);
   font-family: Arial, Helvetica, sans-serif;
   line-height: 1.45;
