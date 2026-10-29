@@ -10,7 +10,7 @@
     const signedIn = Boolean(session);
     if (createLink) createLink.hidden = !signedIn;
     if (accountLink) {
-      accountLink.textContent = signedIn ? 'ACCOUNT' : 'SIGN IN';
+      accountLink.textContent = signedIn ? 'Account' : 'Sign In';
       accountLink.href = 'login.html';
     }
     if (signOutButton) signOutButton.hidden = !signedIn;
