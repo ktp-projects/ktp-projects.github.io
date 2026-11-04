@@ -27,12 +27,12 @@
         date: row.created_at.slice(0, 10),
         image: baseUrl ? `${baseUrl}?v=${version}` : 'images/photo-placeholder.svg',
         imageAlt: row.image_alt || row.title,
-        featured: row.featured
+        award: row.award || 'no'
       };
     },
     async fetchProjects() {
       const { data, error } = await window.EXPO_DB.from('projects')
-        .select('id,author_id,title,description,category,created_at,image_path,image_alt,image_updated_at,featured')
+        .select('id,author_id,title,description,category,award,created_at,image_path,image_alt,image_updated_at')
         .order('created_at', { ascending: false });
       if (error) throw error;
       return data.map(this.asProject);

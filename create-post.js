@@ -8,6 +8,20 @@
   const input = document.getElementById('post-image');
   const preview = document.getElementById('photo-preview');
   const existingNote = document.getElementById('existing-photo-note');
+  const awardSelect = document.getElementById('post-award');
+
+  // Named awards are configured in one place without modifying this form code.
+  const extraAwards = Array.isArray(window.EXPO_ADDITIONAL_AWARDS)
+    ? window.EXPO_ADDITIONAL_AWARDS : [];
+  for (const option of extraAwards) {
+    if (typeof option?.value !== 'string' || typeof option?.label !== 'string') continue;
+    const value = option.value.trim();
+    const label = option.label.trim();
+    if (!value || !label || value.length > 120 ||
+        ['no', 'yes'].includes(value.toLowerCase()) ||
+        Array.from(awardSelect.options).some(item => item.value.toLowerCase() === value.toLowerCase())) continue;
+    awardSelect.add(new Option(label, value));
+  }
   const id = new URLSearchParams(location.search).get('id');
   const isEditing = Boolean(id);
   let currentProject = null;
@@ -37,6 +51,12 @@
       document.getElementById('post-title').value = data.title;
       document.getElementById('post-description').value = data.description;
       document.getElementById('post-category').value = data.category;
+      const savedAward = typeof data.award === 'string' && data.award.trim() ? data.award.trim() : 'no';
+      if (!Array.from(awardSelect.options).some(option => option.value === savedAward)) {
+        // Keep older named awards editable even if removed from the current option list.
+        awardSelect.add(new Option(savedAward, savedAward));
+      }
+      awardSelect.value = savedAward;
       document.getElementById('post-alt').value = data.image_alt || '';
       const url = db.storage.from(window.EXPO_CONFIG.bucket).getPublicUrl(data.image_path).data.publicUrl;
       preview.src = `${url}?v=${new Date(data.image_updated_at).getTime()}`;
@@ -84,6 +104,11 @@
     const title = document.getElementById('post-title').value.trim();
     const description = document.getElementById('post-description').value.trim();
     const category = document.getElementById('post-category').value;
+    const award = awardSelect.value;
+    if (!award || !Array.from(awardSelect.options).some(option => option.value === award)) {
+      say('Select whether this project received an award.', true);
+      return;
+    }
     const imageAlt = document.getElementById('post-alt').value.trim() || title;
     const file = input.files?.[0];
     if (!isEditing && !file) { say('Select one photo to publish your post.', true); return; }
@@ -106,14 +131,14 @@
         newlyUploaded = true;
       }
       if (isEditing) {
-        const changes = { title, description, category, image_alt: imageAlt, updated_at: new Date().toISOString() };
+        const changes = { title, description, category, award, image_alt: imageAlt, updated_at: new Date().toISOString() };
         if (file) changes.image_updated_at = new Date().toISOString();
         const { data, error } = await db.from('projects').update(changes).eq('id', postId).select('id');
         if (error) throw error;
         if (!data.length) throw new Error('You do not have permission to edit this project.');
       } else {
         const { error } = await db.from('projects').insert({
-          id: postId, author_id: currentUser.id, title, description, category,
+          id: postId, author_id: currentUser.id, title, description, category, award,
           image_alt: imageAlt, image_path: imagePath
         });
         if (error) {
@@ -122,11 +147,7 @@
           throw error;
         }
       }
-      // New posts return to the gallery so the author can see their new tile.
-      // Editing still returns to the individual project page.
-      location.assign(isEditing
-        ? `project.html?id=${encodeURIComponent(postId)}`
-        : `index.html?published=${encodeURIComponent(postId)}`);
+      location.assign(`project.html?id=${encodeURIComponent(postId)}`);
     } catch (error) {
       const suffix = isEditing && newlyUploaded ? ' The replacement photo may already be updated; retry saving the text.' : '';
       say(`${error.message}${suffix}`, true);

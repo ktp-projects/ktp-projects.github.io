@@ -95,7 +95,7 @@
     imageBox.append(createImage(project, true));
     const tag = document.createElement('span');
     tag.className = 'featured-tag';
-    tag.textContent = project.category;
+    tag.textContent = project.award.toLowerCase() === 'yes' ? 'Award winner' : project.award;
     imageBox.append(tag);
     const heading = document.createElement('h2');
     heading.textContent = project.title;
@@ -105,7 +105,7 @@
 
   function renderCarousel() {
     if (!featured.length) {
-      carouselStage.textContent = 'No featured projects yet.';
+      carouselStage.textContent = 'No award-winning projects yet.';
       document.getElementById('previous-featured').disabled = true;
       document.getElementById('next-featured').disabled = true;
       return;
@@ -113,9 +113,12 @@
     const left = featured[(featuredIndex - 1 + featured.length) % featured.length];
     const center = featured[featuredIndex];
     const right = featured[(featuredIndex + 1) % featured.length];
-    document.getElementById('feature-left').replaceChildren(featuredCard(left));
+    carouselStage.dataset.count = String(featured.length);
+    document.getElementById('feature-left').replaceChildren(...(featured.length >= 2 ? [featuredCard(left)] : []));
     document.getElementById('feature-center').replaceChildren(featuredCard(center));
-    document.getElementById('feature-right').replaceChildren(featuredCard(right));
+    document.getElementById('feature-right').replaceChildren(...(featured.length >= 3 ? [featuredCard(right)] : []));
+    document.getElementById('previous-featured').disabled = featured.length < 2;
+    document.getElementById('next-featured').disabled = featured.length < 2;
     announcement.textContent = `Featured project ${featuredIndex + 1} of ${featured.length}: ${center.title}`;
     carouselStage.classList.remove('is-swapping');
     // Restart the light fade animation on each slide.
@@ -180,14 +183,13 @@
   document.addEventListener('visibilitychange', () => {
     if (document.hidden) stopAutoplay(); else startAutoplay();
   });
-  document.getElementById('year-now').textContent = new Date().getFullYear();
+  const yearElement = document.getElementById('year-now');
+  if (yearElement) yearElement.textContent = new Date().getFullYear();
   async function initialize() {
-    let projectLoadFailed = false;
     // In preview mode, retain original demo content. Once connected,
     // show ONLY live Supabase records, not the sample records in projects.js.
     if (window.EXPO_CONFIGURED) {
       if (!window.EXPO_DB) {
-        projectLoadFailed = true;
         window.EXPO_UTILS.message(document.getElementById('site-message'),
           'Supabase could not load. Check your internet connection and refresh.', true);
         projects = [];
@@ -195,39 +197,22 @@
         try {
           projects = await window.EXPO_UTILS.fetchProjects();
         } catch (error) {
-          projectLoadFailed = true;
           projects = [];
           window.EXPO_UTILS.message(document.getElementById('site-message'),
             `Could not load posts: ${error.message}`, true);
         }
       }
     }
-    featured = projects.filter(project => project.featured)
-      .sort((a, b) => b.date.localeCompare(a.date));
+    // Anything other than "no" (including "yes" and future award names) qualifies.
+    featured = projects.filter(project =>
+      typeof project.award === 'string' &&
+      project.award.trim() !== '' &&
+      project.award.trim().toLowerCase() !== 'no'
+    ).sort((a, b) => b.date.localeCompare(a.date));
     refreshYearOptions();
     renderProjects();
     renderCarousel();
     startAutoplay();
-
-    // The editor redirects here only AFTER Supabase confirms the row insert.
-    // Confirm the newly published post is visible in this gallery. If it isn't,
-    // show an actionable message instead of silently displaying an empty grid.
-    const publishedId = new URLSearchParams(window.location.search).get('published');
-    if (publishedId && window.EXPO_CONFIGURED && !projectLoadFailed) {
-      const justPublished = projects.find(project => project.id === publishedId);
-      const siteMessage = document.getElementById('site-message');
-      if (justPublished) {
-        window.EXPO_UTILS.message(siteMessage,
-          `Published "${justPublished.title}" successfully. Your tile is in All Projects below.`);
-        const cardLink = Array.from(grid.querySelectorAll('.project-card-link'))
-          .find(link => link.getAttribute('href') ===
-            `project.html?id=${encodeURIComponent(publishedId)}`);
-        if (cardLink) cardLink.closest('.project-card')?.classList.add('post-recently-published');
-      } else {
-        window.EXPO_UTILS.message(siteMessage,
-          'Your project was saved, but the gallery could not find it. Verify the public SELECT policy on the Supabase projects table.', true);
-      }
-    }
   }
   initialize();
 })();

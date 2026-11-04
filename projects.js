@@ -9,7 +9,7 @@ window.EXPO_PROJECTS = [
     date: '2026-10-18',
     image: 'https://images.unsplash.com/photo-1509391366360-2e959784a276?auto=format&fit=crop&w=1100&q=85',
     imageAlt: 'Solar panels under a bright sky',
-    featured: true
+    award: 'yes'
   },
   {
     id: 'robotics-showcase',
@@ -19,7 +19,7 @@ window.EXPO_PROJECTS = [
     date: '2026-10-08',
     image: 'https://images.unsplash.com/photo-1485827404703-89b55fcc595e?auto=format&fit=crop&w=1100&q=85',
     imageAlt: 'Robotics and technology exhibit',
-    featured: true
+    award: 'yes'
   },
   {
     id: 'campus-cleanup',
@@ -29,7 +29,7 @@ window.EXPO_PROJECTS = [
     date: '2026-09-25',
     image: 'https://images.unsplash.com/photo-1473448912268-2022ce9509d8?auto=format&fit=crop&w=1100&q=85',
     imageAlt: 'Trees in a green outdoor space',
-    featured: true
+    award: 'yes'
   },
   {
     id: 'design-build',
@@ -39,7 +39,7 @@ window.EXPO_PROJECTS = [
     date: '2026-09-14',
     image: 'https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?auto=format&fit=crop&w=1100&q=85',
     imageAlt: 'Hands-on engineering and workshop tools',
-    featured: true
+    award: 'yes'
   },
   {
     id: 'leadership-forum',
@@ -49,7 +49,7 @@ window.EXPO_PROJECTS = [
     date: '2026-08-28',
     image: 'https://images.unsplash.com/photo-1528605248644-14dd04022da1?auto=format&fit=crop&w=1100&q=85',
     imageAlt: 'Group collaborating around a table',
-    featured: true
+    award: 'yes'
   },
   {
     id: 'app-design',
@@ -59,7 +59,7 @@ window.EXPO_PROJECTS = [
     date: '2026-08-03',
     image: 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=1100&q=85',
     imageAlt: 'Laptop with code on its display',
-    featured: false
+    award: 'no'
   },
   {
     id: 'maker-night',
@@ -69,7 +69,7 @@ window.EXPO_PROJECTS = [
     date: '2026-04-22',
     image: 'https://images.unsplash.com/photo-1532094349884-543bc11b234d?auto=format&fit=crop&w=1100&q=85',
     imageAlt: 'Equipment inside a science laboratory',
-    featured: false
+    award: 'no'
   },
   {
     id: 'mentorship',
@@ -79,7 +79,7 @@ window.EXPO_PROJECTS = [
     date: '2025-11-13',
     image: 'https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&w=1100&q=85',
     imageAlt: 'Team talking in a shared workspace',
-    featured: false
+    award: 'no'
   },
   {
     id: 'prototype-expo',
@@ -89,6 +89,6 @@ window.EXPO_PROJECTS = [
     date: '2025-10-09',
     image: 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1100&q=85',
     imageAlt: 'Close-up of an electronic circuit board',
-    featured: false
+    award: 'no'
   }
 ];

@@ -92,6 +92,12 @@ button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible
 .featured-card:hover .featured-image img { transform: scale(1.055); }
 .featured-image::after { content: ''; position: absolute; inset: 45% 0 0; background: linear-gradient(transparent, rgba(0,0,0,.45)); pointer-events: none; }
 .featured-tag { position: absolute; bottom: 10px; left: 12px; z-index: 1; color: white; font-size: 10px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; text-shadow: 0 1px 3px #222; }
+/* Prevent duplicate slides when just one or two award-winning projects exist. */
+.carousel-stage[data-count="1"] { max-width: 540px; margin-inline: auto; grid-template-columns: minmax(0, 1fr); }
+.carousel-stage[data-count="1"] .side-item { display: none; }
+.carousel-stage[data-count="2"] { max-width: 780px; margin-inline: auto; grid-template-columns: 1fr 1.65fr; }
+.carousel-stage[data-count="2"] #feature-right { display: none; }
+.carousel-arrow:disabled { opacity: .45; cursor: not-allowed; transform: none; }
 .featured-card h2 { font-size: 12px; margin: 8px 0 0; line-height: 1.45; font-weight: 800; text-transform: uppercase; }
 .focus-item .featured-card h2 { font-size: 13px; }
 .carousel-stage.is-swapping .featured-item { animation: fade-in .34s ease; }
@@ -195,6 +201,3 @@ button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible
 .error-text { color: #9a1b22; font-weight: 700; }
 .detail-edit { margin-top: 20px; }
 .editor-form[hidden], .text-button[hidden] { display: none; }
-
-/* Visually identify the newly published project on the gallery. */
-.project-card.post-recently-published { outline: 3px solid var(--blue); outline-offset: 4px; }
