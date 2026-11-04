@@ -122,7 +122,11 @@
           throw error;
         }
       }
-      location.assign(`project.html?id=${encodeURIComponent(postId)}`);
+      // New posts return to the gallery so the author can see their new tile.
+      // Editing still returns to the individual project page.
+      location.assign(isEditing
+        ? `project.html?id=${encodeURIComponent(postId)}`
+        : `index.html?published=${encodeURIComponent(postId)}`);
     } catch (error) {
       const suffix = isEditing && newlyUploaded ? ' The replacement photo may already be updated; retry saving the text.' : '';
       say(`${error.message}${suffix}`, true);

@@ -182,10 +182,12 @@
   });
   document.getElementById('year-now').textContent = new Date().getFullYear();
   async function initialize() {
+    let projectLoadFailed = false;
     // In preview mode, retain original demo content. Once connected,
     // show ONLY live Supabase records, not the sample records in projects.js.
     if (window.EXPO_CONFIGURED) {
       if (!window.EXPO_DB) {
+        projectLoadFailed = true;
         window.EXPO_UTILS.message(document.getElementById('site-message'),
           'Supabase could not load. Check your internet connection and refresh.', true);
         projects = [];
@@ -193,6 +195,7 @@
         try {
           projects = await window.EXPO_UTILS.fetchProjects();
         } catch (error) {
+          projectLoadFailed = true;
           projects = [];
           window.EXPO_UTILS.message(document.getElementById('site-message'),
             `Could not load posts: ${error.message}`, true);
@@ -205,6 +208,26 @@
     renderProjects();
     renderCarousel();
     startAutoplay();
+
+    // The editor redirects here only AFTER Supabase confirms the row insert.
+    // Confirm the newly published post is visible in this gallery. If it isn't,
+    // show an actionable message instead of silently displaying an empty grid.
+    const publishedId = new URLSearchParams(window.location.search).get('published');
+    if (publishedId && window.EXPO_CONFIGURED && !projectLoadFailed) {
+      const justPublished = projects.find(project => project.id === publishedId);
+      const siteMessage = document.getElementById('site-message');
+      if (justPublished) {
+        window.EXPO_UTILS.message(siteMessage,
+          `Published "${justPublished.title}" successfully. Your tile is in All Projects below.`);
+        const cardLink = Array.from(grid.querySelectorAll('.project-card-link'))
+          .find(link => link.getAttribute('href') ===
+            `project.html?id=${encodeURIComponent(publishedId)}`);
+        if (cardLink) cardLink.closest('.project-card')?.classList.add('post-recently-published');
+      } else {
+        window.EXPO_UTILS.message(siteMessage,
+          'Your project was saved, but the gallery could not find it. Verify the public SELECT policy on the Supabase projects table.', true);
+      }
+    }
   }
   initialize();
 })();

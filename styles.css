@@ -195,3 +195,6 @@ button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible
 .error-text { color: #9a1b22; font-weight: 700; }
 .detail-edit { margin-top: 20px; }
 .editor-form[hidden], .text-button[hidden] { display: none; }
+
+/* Visually identify the newly published project on the gallery. */
+.project-card.post-recently-published { outline: 3px solid var(--blue); outline-offset: 4px; }

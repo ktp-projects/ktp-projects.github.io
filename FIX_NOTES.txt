@@ -1,0 +1,29 @@
+KTProjects index-page publishing fix
+===================================
+
+Changes made:
+- create-post.js: after successfully publishing a NEW post, redirect to
+  index.html?published=<post-id> instead of the individual project page.
+  Editing an existing post continues to return to its project detail page.
+- script.js: upon redirected arrival, verify the post is present in the
+  Supabase gallery results; show a success confirmation and highlight its tile.
+  If the returned query does not include it, display a clear warning.
+- styles.css: add a subtle outline to the just-published tile.
+
+Important:
+- This does not change Supabase data or policies. A project must be written
+  successfully to public.projects for it to appear in the gallery.
+- New project rows default to featured=false, so they appear in ALL PROJECTS,
+  not automatically in the featured carousel. An administrator can feature
+  a project in the database if desired.
+- If the post still does not appear, use Supabase SQL Editor to run:
+
+  select id, title, featured, created_at
+  from public.projects
+  order by created_at desc
+  limit 20;
+
+  If your post is missing, check for a create-post.js upload/insert error.
+  If present but the site does not show it, check browser console, the
+  on-page error message, RLS SELECT policy, and supabase-config.js.
+- Copy changed site files into your repository and publish via GitHub Pages.
